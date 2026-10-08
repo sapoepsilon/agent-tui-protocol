@@ -1,7 +1,7 @@
 # Agent TUI Protocol
 
 `WhisperaAgents` is a Foundation-only Swift library for apps that display agent terminals.
-`WhisperaHerdr` supplies the first adapter. Both support iOS 17 and macOS 14;
+Adapters are independent Swift packages: [agent-herdr](https://github.com/sapoepsilon/agent-herdr) and [agent-tmux](https://github.com/sapoepsilon/agent-tmux). All support iOS 17 and macOS 14;
 no Whispera account, UIKit, AppKit, process launcher or credential is required.
 
 ```swift
@@ -30,12 +30,12 @@ Licensed under MIT; see [LICENSE](LICENSE).
 Add the package to Xcode or Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/sapoepsilon/agent-tui-protocol", from: "0.1.0")
+.package(url: "https://github.com/sapoepsilon/agent-tui-protocol", from: "0.2.0")
 ```
 
 Use `.product(name: "WhisperaAgents", package: "agent-tui-protocol")` for the interface,
-or `.product(name: "WhisperaHerdr", package: "agent-tui-protocol")` for HERDR.
-Run `swift test` to verify the parser, key mapping, raw fallback and safe metadata projection.
+Add `agent-herdr` and `.product(name: "WhisperaHerdr", package: "agent-herdr")` for HERDR, or `agent-tmux` with `WhisperaTmux` for tmux. Version 0.2 moves the old bundled HERDR product into its own package.
+Run `swift test` to verify the parser, key mapping, raw fallback and snapshot fallback. The provider packages test their transport and metadata projection.
 
 ## Provider contract
 
@@ -48,3 +48,5 @@ modifying the interface or host UI. OpenCode is not implemented in this release.
 The included parser understands common transcript markers and terminal question boxes.
 Its output is a best-effort view of one snapshot; keep the original terminal available.
 Hosts own authentication, connectivity, user confirmation, and dispatching returned keys.
+
+`AgentSessionTransport` defines discovery, bounded snapshots, literal prompt sending and validated keys. `TerminalSession` carries stable pane identity and display metadata. Hosts supply their own process runner, authentication and network path.
